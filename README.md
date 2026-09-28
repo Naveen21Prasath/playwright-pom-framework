@@ -1,22 +1,37 @@
 # Playwright POM framework
 
-Portfolio sample that shows how a Playwright suite can be structured. It is not employer source code, and it does not contain production URLs, customer data, or secrets.
+Portfolio sample of a Playwright framework. It is not employer source code, and it does not contain production URLs, customer data, or secrets.
 
-The UI tests run against [SauceDemo](https://www.saucedemo.com), a public demo shop. The username `standard_user` and password `secret_sauce` are published by that site for practice. The API test calls [JSONPlaceholder](https://jsonplaceholder.typicode.com), a public fake API.
+UI tests run against [SauceDemo](https://www.saucedemo.com). The username `standard_user` and password `secret_sauce` are published by that site. API checks call [JSONPlaceholder](https://jsonplaceholder.typicode.com).
 
-Work pipelines I use are Jenkins and GitLab CI. The workflow in `.github/workflows/playwright.yml` is only how this public repository runs on GitHub.
+Work pipelines I use are Jenkins and GitLab CI. This repository runs on GitHub Actions.
 
 ## Structure
 
 ```text
-playwright.config.ts          Environment base URL, HTML report, parallel runs, CI retries
-src/pages/                    Page Object Model (login, inventory)
-src/fixtures/test.ts          Page fixtures and a logged-in inventory fixture
-src/data/users.json           Data-driven login cases
-tests/ui/                     UI specs
-tests/api/                    API spec using Playwright request context
-.github/workflows/playwright.yml
+playwright.config.ts                         Environment base URL, parallel runs, CI retries, Allure
+features/login.feature                       Playwright-BDD scenario
+steps/login.steps.ts                         Step definitions using the page objects
+src/pages/                                   Page Object Model
+src/fixtures/test.ts                         Page fixtures and a logged-in fixture
+src/data/users.json                          JSON test data for login
+tests/ui/                                    Playwright UI specs
+tests/api/                                   Playwright API spec
+collections/jsonplaceholder.postman_collection.json
+                                             Newman collection
+.github/workflows/playwright.yml             GitHub Actions: Playwright, then Newman
 ```
+
+## Environment and secrets
+
+Copy `.env.example` to `.env` when you want to override the defaults:
+
+```text
+BASE_URL=https://www.saucedemo.com
+API_BASE_URL=https://jsonplaceholder.typicode.com
+```
+
+`.env` is gitignored. The sample has no production credentials. Demo login values live in `src/data/users.json` because SauceDemo publishes them.
 
 ## Setup
 
@@ -25,31 +40,15 @@ Requires Node.js 20 or newer.
 ```bash
 npm install
 npx playwright install chromium
-copy .env.example .env
 ```
-
-On macOS or Linux, use `cp .env.example .env`. The `.env` file is optional. Defaults point at SauceDemo and JSONPlaceholder.
 
 ## Run
 
 ```bash
 npm test
-npm run test:ui
-npm run test:api
-npm run report
+npm run test:bdd
+npm run test:newman
+npm run allure:report
 ```
 
-`playwright.config.ts` turns on parallel execution. In CI it also retries a failed test once and records a trace on the first retry.
-
-## Publish this folder
-
-Create an empty public GitHub repository named `playwright-pom-framework`. Do not add a README, license, or `.gitignore` on GitHub, because this folder already has them.
-
-From this folder:
-
-```bash
-git remote add origin https://github.com/<your-username>/playwright-pom-framework.git
-git push -u origin main
-```
-
-The public URL is `https://github.com/<your-username>/playwright-pom-framework`.
+`npm test` runs the Playwright specs and the BDD scenario. Allure writes `allure-results/`. `npm run allure:report` builds `allure-report/`. Newman runs the Postman collection from the command line, the same way it can run in CI.

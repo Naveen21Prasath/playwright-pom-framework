@@ -1,0 +1,41 @@
+{
+  "info": {
+    "name": "JSONPlaceholder posts",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET post 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const body = pm.response.json();",
+              "pm.test('id, title, and body are present', function () {",
+              "  pm.expect(body.id).to.eql(1);",
+              "  pm.expect(body.title).to.be.a('string').and.not.empty;",
+              "  pm.expect(body.body).to.be.a('string').and.not.empty;",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{apiBaseUrl}}/posts/1"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "apiBaseUrl",
+      "value": "https://jsonplaceholder.typicode.com"
+    }
+  ]
+}

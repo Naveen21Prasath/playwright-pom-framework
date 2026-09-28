@@ -1,13 +1,20 @@
 import path from "path";
 import { defineConfig, devices } from "@playwright/test";
+import { defineBddConfig } from "playwright-bdd";
 import dotenv from "dotenv";
 
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 const isCI = !!process.env.CI;
+const bddTestDir = defineBddConfig({
+  features: "features/**/*.feature",
+  steps: ["steps/**/*.ts", "src/fixtures/test.ts"],
+  outputDir: ".features-gen",
+  importTestFrom: "src/fixtures/test.ts",
+  disableWarnings: { importTestFrom: true },
+});
 
 export default defineConfig({
-  testDir: "./tests",
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
@@ -16,6 +23,7 @@ export default defineConfig({
   reporter: [
     ["list"],
     ["html", { open: "never" }],
+    ["allure-playwright"],
   ],
   use: {
     baseURL: process.env.BASE_URL ?? "https://www.saucedemo.com",
@@ -25,6 +33,12 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testDir: "./tests",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "bdd",
+      testDir: bddTestDir,
       use: { ...devices["Desktop Chrome"] },
     },
   ],

@@ -1,4 +1,4 @@
-import { test as base } from "@playwright/test";
+import { test as base } from "playwright-bdd";
 import { standardUser } from "../data/users";
 import { InventoryPage } from "../pages/InventoryPage";
 import { LoginPage } from "../pages/LoginPage";

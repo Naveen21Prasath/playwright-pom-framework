@@ -6,3 +6,6 @@ playwright/.cache/
 dist/
 .env
 *.log
+.features-gen/
+allure-results/
+allure-report/

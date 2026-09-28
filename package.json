@@ -2,17 +2,24 @@
   "name": "playwright-pom-framework",
   "version": "1.0.0",
   "private": true,
-  "description": "Portfolio sample of a Playwright framework using the Page Object Model, fixtures, and data-driven tests.",
+  "description": "Portfolio sample of a Playwright framework using POM, Playwright-BDD, Allure, and Newman.",
   "scripts": {
-    "test": "playwright test",
-    "test:ui": "playwright test tests/ui",
-    "test:api": "playwright test tests/api",
-    "report": "playwright show-report"
+    "test": "bddgen && playwright test",
+    "test:ui": "playwright test --project=chromium tests/ui",
+    "test:api": "playwright test --project=chromium tests/api",
+    "test:bdd": "bddgen && playwright test --project=bdd",
+    "test:newman": "newman run collections/jsonplaceholder.postman_collection.json",
+    "report": "playwright show-report",
+    "allure:report": "allure generate allure-results --clean -o allure-report"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^22.15.0",
+    "allure-commandline": "^2.34.1",
+    "allure-playwright": "^3.2.2",
     "dotenv": "^16.6.1",
+    "newman": "^6.2.1",
+    "playwright-bdd": "^9.2.1",
     "typescript": "^5.9.2"
   }
 }
